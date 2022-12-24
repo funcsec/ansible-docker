@@ -6,3 +6,7 @@ servers. Otherwise it's much easier to copy paste commands from the
 official Docker install documentation and save from creating
 unnecessary automation.
 
+
+## Installation
+
+Copy/clone the ~docker~ folder into the ~roles~ directory of your Ansible project. 

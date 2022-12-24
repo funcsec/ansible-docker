@@ -1,0 +1,12 @@
+---
+#
+# Tasks to be applied to all servers
+#
+
+# Add further tasks for the common role (applied to all servers) to this playbook...
+
+- name: Include docker tasks
+  include_tasks: docker.yml
+  tags: docker
+  
+...

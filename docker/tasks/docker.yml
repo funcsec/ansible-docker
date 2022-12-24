@@ -1,0 +1,71 @@
+---
+
+
+- name: Remove legacy packages
+  apt:
+    pkg:
+    - docker 
+    - docker-engine 
+    - docker.io 
+    - containerd 
+    - runc
+    state: absent 
+  tags: docker
+
+- name: Install required packages
+  apt:
+    pkg:
+    - ca-certificates
+    - curl
+    - gnupg
+    - lsb-release
+  tags: docker
+
+- name: Create key folder
+  file: 
+    path: "/etc/apt/keyrings"
+    state: directory
+  tags: docker
+
+- name: Add Docker key
+  ansible.builtin.get_url:
+    url: "{{ docker_key_url }}"
+    dest: "{{ docker_asc_path }}"
+    checksum: "{{ docker_asc_checksum }}"
+    mode: 0644
+  tags: docker
+
+- name: Dearmor Docker key
+  ansible.builtin.command: gpg --dearmor -o "{{ docker_key_path }}" "{{ docker_asc_path }}"
+  args: 
+    creates: "{{ docker_key_path }}"
+  tags: docker
+
+- name: Add Docker repository to sources list
+  ansible.builtin.apt_repository:
+    repo: "deb [arch=amd64 signed-by={{ docker_key_path }}] https://download.docker.com/linux/debian {{ ansible_distribution_release }} stable"
+    state: present
+    filename: docker
+  tags: docker
+
+- name: Install Docker packages
+  apt:
+    pkg: 
+    - docker-ce
+    - docker-ce-cli 
+    - containerd.io 
+    - docker-compose-plugin
+    update_cache: yes
+  tags: docker
+
+- name: Start and enable Docker services at boot 
+  ansible.builtin.systemd:
+    name: "{{ item }}"
+    enabled: yes
+    state: started
+  with_items:
+  - docker
+  - containerd
+  tags: docker
+
+...
