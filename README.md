@@ -9,4 +9,4 @@ unnecessary automation.
 
 ## Installation
 
-Copy/clone the ~docker~ folder into the ~roles~ directory of your Ansible project. 
+Copy/clone the `docker` folder into the `roles` directory of your Ansible project. 
